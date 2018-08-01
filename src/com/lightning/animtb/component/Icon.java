@@ -17,13 +17,13 @@ public class Icon extends Component {
 		this.icon = icon;
 	}
 
-	public void renderThis(boolean halfBright) {
+	public void renderThis() {
 		BufferedImage target = Main.display;
 		Graphics g = target.getGraphics();
 		g.drawImage(icon, x, y, null);
 	}
 	
-	public boolean mousePressedThis(int mouseX, int mouseY) {return false;}
+	public boolean mousePressedThis(int mouseX, int mouseY, int button) {return false;}
 	
-	public boolean mouseReleasedThis(int mouseX, int mouseY) {return false;}
+	public boolean mouseReleasedThis(int mouseX, int mouseY, int button) {return false;}
 }

@@ -15,7 +15,8 @@ import javax.swing.JLabel;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import com.lightning.animtb.component.Component;
-import com.lightning.animtb.component.dialog.Dialog;
+import com.lightning.animtb.component.MenuBar;
+import com.lightning.animtb.component.Scene;
 import com.lightning.animtb.component.dialog.WindowCloseDialog;
 import com.lightning.animtb.util.Logger;
 
@@ -24,8 +25,8 @@ public class Main {
 	private static BufferedImage display2 = new BufferedImage(960, 540, BufferedImage.TYPE_3BYTE_BGR);
 	private static ImageIcon displayIcon;
 	private static JLabel displayLabel;
-	
-	private static boolean dialogOpen = false;
+	private static JFrame frame;
+	private static boolean icon = false;
 	public static Stack<Component> objectStack = new Stack<>();
 	
 	public static int width = 960, height = 540;
@@ -33,10 +34,8 @@ public class Main {
 	public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
 		Logger.getLogger().println("Animator's Toolbox 1.0");
 		Logger.getLogger().println("Starting...");
-		JFrame frame = new JFrame("Animator's Toolbox");
+		frame = new JFrame("Animator's Toolbox");
 		frame.add(displayLabel = new JLabel(displayIcon = new ImageIcon(display2)));
-	    frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		frame.setUndecorated(true);
 		frame.addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent evt) {
 				width = evt.getComponent().getWidth();
@@ -46,12 +45,17 @@ public class Main {
 				displayIcon.setImage(display2);
 			}
 		});
-		//frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		frame.pack();
 		frame.addWindowListener(new WindowAdapter() {
-		    public void windowClosing(WindowEvent windowEvent) {
-		        dialogOpen = true;
+			public void windowIconified(WindowEvent windowEvent) {
+				icon = true;
+			}
+			
+			public void windowDeiconified(WindowEvent windowEvent) {
+				icon = false;
+			}
+			
+			public void windowClosing(WindowEvent windowEvent) {
 		        objectStack.push(new WindowCloseDialog());
 		    }
 		});
@@ -65,10 +69,12 @@ public class Main {
 			public void mousePressed(MouseEvent e) {
 				int mouseX = e.getX();
 				int mouseY = e.getY();
-				
-				for(Component c : objectStack) {
+				int button = e.getButton();
+
+				for(int i = 0; i < objectStack.size(); i++) {
+					Component c = objectStack.get(objectStack.size() - i - 1);
 					if(mouseX >= c.x && mouseX < c.width + c.x && mouseY >= c.y && mouseY < c.height + c.y) {
-						c.mousePressed(mouseX, mouseY);
+						c.mousePressed(mouseX, mouseY, button);
 						break;
 					}
 				}
@@ -77,29 +83,36 @@ public class Main {
 			public void mouseReleased(MouseEvent e) {
 				int mouseX = e.getX();
 				int mouseY = e.getY();
+				int button = e.getButton();
 				
-				for(Component c : objectStack) {
+				for(int i = 0; i < objectStack.size(); i++) {
+					Component c = objectStack.get(objectStack.size() - i - 1);
 					if(mouseX >= c.x && mouseX < c.width + c.x && mouseY >= c.y && mouseY < c.height + c.y) {
-						c.mouseReleased(mouseX, mouseY);
-						break;
+						if(c.mouseReleased(mouseX, mouseY, button)) break;
 					}
 				}
 			}
 		});
+
+	    frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frame.setUndecorated(true);
+		frame.pack();
 		frame.setVisible(true);
-		width = frame.getWidth();
-		height = frame.getHeight();
+		
+		objectStack.push(new MenuBar());
+		objectStack.push(new Scene());
 		
 		long lastTime = System.currentTimeMillis();
 		
 		while(frame.isVisible()) {
-			for(int i = 0; i < objectStack.size(); i++) {
-				Component c = objectStack.elementAt(objectStack.size() - i - 1);
-				c.render(!(c instanceof Dialog) && i != 0 && dialogOpen);
+			for(Component c : objectStack) {
+				c.render();
 			}
 			
 			display2.getGraphics().drawImage(display, 0, 0, null);
 			frame.repaint();
+			width = frame.getWidth();
+			height = frame.getHeight();
 			display.getGraphics().clearRect(0, 0, width, height);
 			
 			long curTime = System.currentTimeMillis();
@@ -108,11 +121,20 @@ public class Main {
 				curTime = System.currentTimeMillis();
 			}
 			lastTime = curTime;
+		    if(!icon) frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		}
 	}
 	
 	public static boolean cleanup() {
 		// Will check for saving etc.
 		return true;
+	}
+	
+	public static void minimize() {
+		frame.setState(JFrame.ICONIFIED);
+	}
+	
+	public static void sendCloseSignal() {
+		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 	}
 }

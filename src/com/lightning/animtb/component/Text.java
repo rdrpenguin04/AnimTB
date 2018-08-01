@@ -32,7 +32,7 @@ public class Text extends Component {
 		this.text = text;
 	}
 	
-	public void renderThis(boolean halfBright) {
+	public void renderThis() {
 		BufferedImage target = Main.display;
 		Graphics g = target.getGraphics();
 		for(int i = 0; i < text.length(); i++) {
@@ -43,7 +43,7 @@ public class Text extends Component {
 		}
 	}
 	
-	public boolean mousePressedThis(int mouseX, int mouseY) {return false;}
+	public boolean mousePressedThis(int mouseX, int mouseY, int button) {return false;}
 	
-	public boolean mouseReleasedThis(int mouseX, int mouseY) {return false;}
+	public boolean mouseReleasedThis(int mouseX, int mouseY, int button) {return false;}
 }

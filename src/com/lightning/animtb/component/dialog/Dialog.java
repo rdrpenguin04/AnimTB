@@ -12,10 +12,10 @@ public abstract class Dialog extends Component {
 		super(width, height);
 	}
 
-	public void renderThis(boolean halfBright) {
+	public void renderThis() {
 		BufferedImage target = Main.display;
 		Graphics g = target.getGraphics();
-		g.setColor(halfBright ? Color.WHITE.darker() : Color.WHITE);
+		g.setColor(Color.WHITE);
 		g.fillRect(x, y, width, height);
 	}
 }

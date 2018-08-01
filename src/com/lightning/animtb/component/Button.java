@@ -9,34 +9,26 @@ import com.lightning.animtb.main.Main;
 public class Button extends Component {
 	public Runnable whenClicked;
 	
-	public Button(String text, Runnable whenClicked) {
-		super(Math.max(text.length()*8, 56)+8, 24);
-		if(text.length()*8 > 64) {
-			subComponents.add(new Text(text, x+4, y+4));
-		} else {
-			subComponents.add(new Text(text, x+32-text.length()*4, y+4));
-		}
+	public Button(Runnable whenClicked, int width, int height) {
+		super(width, height);
+		this.whenClicked = whenClicked;
 	}
 	
-	public Button(String text, Runnable whenClicked, int x, int y) {
-		super(x, y, Math.max(text.length()*8, 56)+8, 24);
-		if(text.length()*8 > 64) {
-			subComponents.add(new Text(text, x+4, y+8));
-		} else {
-			subComponents.add(new Text(text, x+32-text.length()*4, y+4));
-		}
+	public Button(Runnable whenClicked, int x, int y, int width, int height) {
+		super(x, y, width, height);
+		this.whenClicked = whenClicked;
 	}
 	
-	public void renderThis(boolean halfBright) {
+	public void renderThis() {
 		BufferedImage target = Main.display;
 		Graphics g = target.getGraphics();
-		g.setColor(halfBright ? Color.LIGHT_GRAY.darker() : Color.LIGHT_GRAY);
+		g.setColor(Color.LIGHT_GRAY);
 		g.fillRect(x, y, width, height);
 	}
 	
-	public boolean mousePressedThis(int mouseX, int mouseY) {return false;}
+	public boolean mousePressedThis(int mouseX, int mouseY, int button) {return false;}
 	
-	public boolean mouseReleasedThis(int mouseX, int mouseY) {
+	public boolean mouseReleasedThis(int mouseX, int mouseY, int button) {
 		whenClicked.run();
 		return true;
 	}

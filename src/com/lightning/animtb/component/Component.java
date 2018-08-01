@@ -23,41 +23,41 @@ public abstract class Component {
 	
 	protected ArrayList<Component> subComponents = new ArrayList<>();
 	
-	public final void render(boolean halfBright) {
-		renderThis(halfBright);
+	public final void render() {
+		renderThis();
 		for(int i = 0; i < subComponents.size(); i++) {
 			Component c = subComponents.get(subComponents.size() - i - 1);
-			c.render(halfBright);
+			c.render();
 		}
+		renderThisPost();
 	}
+
+	public abstract void renderThis();
+	public void renderThisPost() {}
 	
-	public abstract void renderThis(boolean halfBright);
-	
-	public final boolean mousePressed(int mouseX, int mouseY) {
+	public final boolean mousePressed(int mouseX, int mouseY, int button) {
 		boolean handled = false;
 		for(Component c : subComponents) {
 			if(mouseX >= c.x && mouseX < c.width + c.x && mouseY >= c.y && mouseY < c.height + c.y) {
-				handled = c.mousePressed(mouseX, mouseY);
-				break;
+				if(handled = c.mousePressed(mouseX, mouseY, button)) break;
 			}
 		}
-		return handled || mousePressedThis(mouseX, mouseY); // ;)
+		return handled || mousePressedThis(mouseX, mouseY, button); // ;)
 	}
 	
-	public abstract boolean mousePressedThis(int mouseX, int mouseY);
+	public abstract boolean mousePressedThis(int mouseX, int mouseY, int button);
 	
-	public final boolean mouseReleased(int mouseX, int mouseY) {
+	public final boolean mouseReleased(int mouseX, int mouseY, int button) {
 		boolean handled = false;
 		for(Component c : subComponents) {
 			if(mouseX >= c.x && mouseX < c.width + c.x && mouseY >= c.y && mouseY < c.height + c.y) {
-				handled = c.mouseReleased(mouseX, mouseY);
-				break;
+				if(handled = c.mouseReleased(mouseX, mouseY, button)) break;
 			}
 		}
-		return handled || mouseReleasedThis(mouseX, mouseY); // ;)
+		return handled || mouseReleasedThis(mouseX, mouseY, button); // ;)
 	}
 	
-	public abstract boolean mouseReleasedThis(int mouseX, int mouseY);
+	public abstract boolean mouseReleasedThis(int mouseX, int mouseY, int button);
 	
 	private Component parent = null;
 	
