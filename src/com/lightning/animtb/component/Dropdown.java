@@ -1,5 +1,7 @@
 package com.lightning.animtb.component;
 
+import com.lightning.animtb.main.Main;
+
 public class Dropdown extends Component {
 	public Dropdown(int x, int y, DropButton[] choices) {
 		super(x, y, choiceWidth(choices), choices.length*16);
@@ -18,12 +20,20 @@ public class Dropdown extends Component {
 				maxWidth = choices[i].width;
 		return maxWidth;
 	}
+
+	private boolean wasDown = false;
+	private boolean wasDown2 = false;
 	
 	public void renderThis() {
-		
+		if(Main.mouseDown && !wasDown)
+			wasDown = true;
+		else if(wasDown && !Main.mouseDown)
+			wasDown2 = true;
+		else if(wasDown2)
+			removeThis();
 	}
 
-	public boolean mousePressedThis(int mouseX, int mouseY, int button) {return false;}
+	public boolean mousePressedThis(int mouseX, int mouseY, int button) { return false; }
 
-	public boolean mouseReleasedThis(int mouseX, int mouseY, int button) {return false;}
+	public boolean mouseReleasedThis(int mouseX, int mouseY, int button) { return false; }
 }

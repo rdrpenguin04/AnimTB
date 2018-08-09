@@ -66,10 +66,15 @@ public abstract class Component {
 	}
 	
 	public void removeThis() {
-		if(parent != null) {
-			parent.subComponents.remove(this);
-		} else {
-			Main.objectStack.remove(this);
-		}
+		Component me = this;
+		new Thread(new Runnable() {
+			public void run() {
+				if(parent != null) {
+					parent.subComponents.remove(me);
+				} else {
+					Main.toRemove.add(me);
+				}
+			}
+		}).run();
 	}
 }

@@ -5,18 +5,27 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import com.lightning.animtb.Icons;
+import com.lightning.animtb.component.dialog.AboutDialog;
 import com.lightning.animtb.main.Main;
 
 public class MenuBar extends Component {
 	private static final DropButton[] fileMenu;
+	private static final DropButton[] windowMenu;
 	
 	static {
 		fileMenu = new DropButton[] {
-				new DropButton("New Project...", new Runnable() {
-					public void run() {
-						Main.newProject();
-					}
-				})
+			new DropButton("New Project...", new Runnable() {
+				public void run() {
+					Main.newProject();
+				}
+			})
+		};
+		windowMenu = new DropButton[] {
+			new DropButton("About Animator's Toolbox", new Runnable() {
+				public void run() {
+					Main.objectStack.push(new AboutDialog());
+				}
+			})
 		};
 	}
 	
@@ -33,12 +42,23 @@ public class MenuBar extends Component {
 			}
 		}, Main.width - 16, 0));
 		int widthFromLeft = 0;
-		DropButton tmp = new DropButton("File", new Runnable() {
+		DropButton tmp = new DropButton("File ", new Runnable() {
 			public void run() {
 				Main.objectStack.push(new Dropdown(0, 16, fileMenu));
 			}
 		});
 		tmp.x = 0;
+		tmp.y = 0;
+		tmp.parent = new DummyParent();
+		widthFromLeft += tmp.width;
+		subComponents.add(tmp);
+		final int windowPos = widthFromLeft;
+		tmp = new DropButton("Window ", new Runnable() {
+			public void run() {
+				Main.objectStack.push(new Dropdown(windowPos, 16, windowMenu));
+			}
+		});
+		tmp.x = widthFromLeft;
 		tmp.y = 0;
 		tmp.parent = new DummyParent();
 		widthFromLeft += tmp.width;

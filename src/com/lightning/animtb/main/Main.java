@@ -7,6 +7,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Stack;
 
 import javax.swing.ImageIcon;
@@ -28,6 +29,7 @@ public class Main {
 	private static JFrame frame;
 	private static boolean icon = false;
 	public static Stack<Component> objectStack = new Stack<>();
+	public static ArrayList<Component> toRemove = new ArrayList<>();
 	public static boolean mouseDown = false;
 	
 	public static int width = 960, height = 540;
@@ -129,6 +131,9 @@ public class Main {
 				width = frame.getWidth();
 				height = frame.getHeight();
 				display.getGraphics().clearRect(0, 0, width, height);
+				for(Component c : toRemove) {
+					objectStack.remove(c);
+				}
 			}
 			long curTime = System.currentTimeMillis();
 			while(curTime - 50 < lastTime) {
