@@ -8,6 +8,18 @@ import com.lightning.animtb.Icons;
 import com.lightning.animtb.main.Main;
 
 public class MenuBar extends Component {
+	private static final DropButton[] fileMenu;
+	
+	static {
+		fileMenu = new DropButton[] {
+				new DropButton("New Project...", new Runnable() {
+					public void run() {
+						Main.newProject();
+					}
+				})
+		};
+	}
+	
 	public MenuBar() {
 		super(0, 0, Main.width, 16);
 		subComponents.add(new IconButton(new Icon(Icons.MIcon), new Runnable() {
@@ -20,6 +32,17 @@ public class MenuBar extends Component {
 				Main.sendCloseSignal();
 			}
 		}, Main.width - 16, 0));
+		int widthFromLeft = 0;
+		DropButton tmp = new DropButton("File", new Runnable() {
+			public void run() {
+				Main.objectStack.push(new Dropdown(0, 16, fileMenu));
+			}
+		});
+		tmp.x = 0;
+		tmp.y = 0;
+		tmp.parent = new DummyParent();
+		widthFromLeft += tmp.width;
+		subComponents.add(tmp);
 	}
 
 	public void renderThis() {

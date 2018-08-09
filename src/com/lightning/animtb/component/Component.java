@@ -65,7 +65,7 @@ public abstract class Component {
 		this.parent = parent;
 	}
 	
-	public final void removeThis() {
+	public void removeThis() {
 		if(parent != null) {
 			parent.subComponents.remove(this);
 		} else {
